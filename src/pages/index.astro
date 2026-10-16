@@ -1,0 +1,221 @@
+---
+import '../styles/global.css';
+import Section from '../components/Section.astro';
+import Timeline from '../components/Timeline.astro';
+import { profile, experience, education, skills } from '../data/profile';
+import { projects } from '../data/projects';
+
+const [firstName, ...rest] = profile.name.split(' ');
+const lastName = rest.join(' ');
+const current = experience[0];
+const year = new Date().getFullYear();
+
+const facts = [
+  { label: 'Name', value: profile.name },
+  { label: 'Date of birth', value: profile.birthday },
+  { label: 'Address', value: profile.location },
+  { label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
+  { label: 'Phone', value: profile.phone, href: profile.phoneHref },
+];
+
+const nav = [
+  { href: '#about', label: 'About' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#contact', label: 'Contact' },
+];
+
+const typeLabel = { web: 'Web', desktop: 'Desktop' } as const;
+const description = profile.summary
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{profile.name} · Portfolio</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={`${profile.name} · Portfolio`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#ecefea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1c1d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-svh">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
+      Skip to content
+    </a>
+
+    <header class="sticky top-0 z-40 border-b border-transparent bg-paper/90 backdrop-blur-md transition-colors data-scrolled:border-line" data-header>
+      <div class="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3 sm:px-8">
+        <a href="#top" class="font-wide text-lg font-extrabold tracking-tight" aria-label={`${profile.name}, back to top`}>JQ</a>
+        <nav aria-label="Main">
+          <ul class="flex flex-wrap justify-end gap-x-4 gap-y-1 text-sm sm:gap-x-8">
+            {nav.map((item) => (
+              <li><a href={item.href} class="text-muted transition-colors hover:text-ink">{item.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- Hero -->
+      <section id="top" class="@container mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl flex-col justify-between px-4 pb-12 pt-10 sm:px-8 md:pb-16 md:pt-14">
+        <p class="flex items-center gap-3 text-sm text-muted">
+          <span class="h-px w-8 bg-accent" aria-hidden="true"></span>
+          {current.title} at {current.place}, Cartagena, Colombia
+        </p>
+
+        <h1 class="font-wide my-12 text-[clamp(2.5rem,6vw,4.75rem)] font-extrabold leading-none tracking-[-0.045em]">
+          {profile.name}
+        </h1>
+
+        <div class="grid gap-6 border-t border-line pt-6 md:grid-cols-12 md:items-end md:gap-x-8 md:pt-8">
+          <p class="font-semiwide text-2xl font-semibold text-accent md:col-span-5 md:text-3xl">
+            {profile.roles.join(' · ')}
+          </p>
+          <div class="md:col-span-6 md:col-start-7">
+            <p class="max-w-md text-lg leading-relaxed">
+              I build full-stack software, from responsive websites and web applications to reliable back-end services, using technologies like C#, .NET, React, Angular, Astro and SQL.
+            </p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href={`mailto:${profile.email}`} class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-accent">
+                Email me
+              </a>
+              <a href="#experience" class="rounded-full border border-ink/25 px-5 py-2.5 text-sm font-medium transition-colors hover:border-ink">
+                View experience
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="border-t border-line"></div>
+
+      <Section id="about" title="About">
+        <p class="max-w-2xl text-2xl leading-snug md:text-[1.75rem]">{profile.summary}</p>
+        <dl class="mt-12 grid border-t border-line sm:grid-cols-2">
+          {facts.map((fact) => (
+            <div class="flex flex-col gap-1 border-b border-line py-4 sm:pr-8">
+              <dt class="text-sm text-muted">{fact.label}</dt>
+              <dd>
+                {fact.href ? <a href={fact.href} class="link-underline">{fact.value}</a> : fact.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
+
+      <Section id="experience" title="Experience">
+        <Timeline items={experience} />
+      </Section>
+
+      <Section id="education" title="Education">
+        <Timeline items={education} />
+      </Section>
+
+      <Section id="skills" title="Skills">
+        <ul class="grid gap-3 sm:grid-cols-2">
+          {skills.map((skill) => (
+            <li class="flex min-h-16 items-center justify-between gap-4 border-b border-line py-4">
+              <span class="font-semiwide text-lg font-semibold">{skill.name}</span>
+              <span class="text-right text-sm text-muted">{skill.level}%</span>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section id="projects" title="Projects">
+        {projects.length === 0 ? (
+          <div class="border-y border-line py-8">
+            <p class="font-semiwide text-xl font-semibold">Selected work</p>
+            <p class="mt-2 max-w-lg leading-relaxed text-muted">
+              For project details and code, visit my GitHub profile.
+            </p>
+            <a href={profile.github} target="_blank" rel="noopener noreferrer" class="link-underline mt-4 inline-block">
+              Explore GitHub <span aria-hidden="true">↗</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          </div>
+        ) : (
+          <ul class="border-t border-line">
+            {projects.map((project) => (
+              <li class="group relative grid gap-3 border-b border-line py-8 md:grid-cols-12 md:gap-x-8">
+                <div class="md:col-span-5">
+                  <h3 class="font-semiwide text-2xl font-bold tracking-tight md:text-3xl">
+                    <a href={project.link} target="_blank" rel="noopener" class="after:absolute after:inset-0 group-hover:text-accent transition-colors">
+                      {project.name}
+                    </a>
+                  </h3>
+                  <span
+                    class:list={[
+                      'mt-3 inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium',
+                      project.type === 'web' ? 'border-lagoon/40 text-lagoon' : 'border-ochre/40 text-ochre',
+                    ]}
+                  >
+                    {typeLabel[project.type]}
+                  </span>
+                </div>
+                <div class="md:col-span-7">
+                  <p class="max-w-prose leading-relaxed">{project.description}</p>
+                  <p class="mt-3 text-sm text-muted">
+                    <span class="underline decoration-line underline-offset-4 group-hover:text-accent group-hover:decoration-accent">
+                      {project.linkLabel ?? (project.type === 'web' ? 'Visit site' : 'Get the app')}
+                    </span>
+                    <span class="sr-only"> (opens in a new tab)</span>
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+    </main>
+
+    <footer id="contact" class="border-t border-line bg-deep text-on-deep">
+      <div class="mx-auto max-w-6xl px-4 py-12 sm:px-8 md:py-16">
+        <div class="flex flex-col gap-8 border-b border-on-deep/15 pb-10 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 class="font-semiwide text-2xl font-semibold tracking-tight sm:text-3xl">Let’s build something useful.</h2>
+            <p class="mt-2 text-sm text-on-deep/65">Have a question or an idea? Get in touch.</p>
+          </div>
+          <a
+            href={`mailto:${profile.email}`}
+            class="w-fit max-w-full break-all text-base font-medium underline decoration-on-deep/35 underline-offset-4 transition-colors hover:text-on-deep/75 hover:decoration-on-deep sm:text-lg"
+          >
+            {profile.email}
+          </a>
+        </div>
+
+        <dl class="grid gap-6 py-8 text-sm sm:grid-cols-3 sm:gap-8">
+          <div>
+            <dt class="text-on-deep/60">Phone</dt>
+            <dd class="mt-1"><a href={profile.phoneHref} class="transition-colors hover:text-on-deep/75 hover:underline underline-offset-4">{profile.phone}</a></dd>
+          </div>
+          <div>
+            <dt class="text-on-deep/60">Location</dt>
+            <dd class="mt-1">{profile.address}</dd>
+          </div>
+          <div>
+            <dt class="text-on-deep/60">GitHub</dt>
+            <dd class="mt-1"><a href={profile.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-on-deep/75 hover:underline underline-offset-4">{profile.github.replace('https://', '')}</a></dd>
+          </div>
+        </dl>
+
+        <p class="border-t border-on-deep/15 pt-5 text-xs text-on-deep/55">
+          © {year} {profile.name}. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const header = document.querySelector<HTMLElement>('[data-header]');
+      const onScroll = () => header?.toggleAttribute('data-scrolled', window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+  </body>
+</html>

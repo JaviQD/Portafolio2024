@@ -1,0 +1,111 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/anybody/wdth.css';
+@import '@fontsource-variable/schibsted-grotesk';
+
+@theme {
+  --font-display: 'Anybody Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-ochre: var(--ochre);
+  --color-lagoon: var(--lagoon);
+  --color-deep: var(--deep);
+  --color-on-deep: var(--on-deep);
+}
+
+:root {
+  --paper: #f2f3ee;
+  --ink: #102a2c;
+  --muted: #4b5f60;
+  --line: #cbd3cd;
+  --accent: #a91f55;
+  --ochre: #8c5d0c;
+  --lagoon: #17676b;
+  --deep: #102a2c;
+  --on-deep: #f2f3ee;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0f1c1d;
+    --ink: #e4ebe6;
+    --muted: #93a6a3;
+    --line: #2a3d3e;
+    --accent: #f0679c;
+    --ochre: #e3ad52;
+    --lagoon: #6cc3c4;
+    --deep: #0a1415;
+    --on-deep: #e4ebe6;
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility font-wide {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 150;
+}
+
+@utility font-semiwide {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 115;
+}
+
+@utility link-underline {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: var(--line);
+  transition: text-decoration-color 150ms, color 150ms;
+
+  &:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+}

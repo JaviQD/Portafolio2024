@@ -1,0 +1,24 @@
+---
+import type { TimelineItem } from '../data/profile';
+
+interface Props {
+  items: TimelineItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="border-t border-line">
+  {
+    items.map((item) => (
+      <li class="grid gap-x-8 gap-y-3 border-b border-line py-6 md:grid-cols-12 md:gap-y-1">
+        <p class="text-sm text-muted tabular-nums md:col-span-3 md:pt-1">{item.period}</p>
+        <div class="md:col-span-4">
+          <h3 class="font-semiwide text-lg font-semibold leading-snug">{item.title}</h3>
+          <p class="text-muted">{item.place}</p>
+        </div>
+        <p class="max-w-prose leading-relaxed md:col-span-5">{item.description}</p>
+      </li>
+    ))
+  }
+</ol>
